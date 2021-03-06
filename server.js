@@ -4,19 +4,23 @@ const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 const { v4: uuidV4 } = require('uuid');
-const users = require ('./models').users;
+const {sequelize} = require ('./models');
 
-app.set('view engine', 'ejs')
-app.use(express.static('public'))
-//Route for chek
-app.get('/Users',(req,res)=>{
-  users.findAll().then(fetchedData=>{
-    res.json(fetchedData);
-  });
-});
-app.get('/getUser',(req,res)=>{
-  res.json('REQUEST WAE SUCCESSFUL');
-});
+
+app.use(express.json({extended: true}));
+app.use('/api/auth', require('./routes/auth.routes'))
+
+
+async function start(){
+  try {
+    await sequelize.authenticate();
+    console.log('Connection has been established successfully.');
+    server.listen(5000);
+  } catch (error) {
+    console.error('Unable to connect to the database:', error);
+  }
+}
+
 
 app.get('/', (req, res) => {
   res.redirect(`/${uuidV4()}`)
@@ -28,9 +32,9 @@ app.get('/:room', (req, res) => {
 
 // ADD DATA TO DB
 //users.create({
-  //nickname: 'Test1',
-  //email:'testEmail1',
-  //password:'TestPassword1',
+  //nickName: 'Test2',
+  //email:'testEmail2',
+  //password:'TestPassword2',
 //})
 io.on('connection', socket => {
   socket.on('join-room', (roomId, userId) => {
@@ -42,5 +46,12 @@ io.on('connection', socket => {
     })
   })
 })
+start();
 
-server.listen(3000)
+//server.listen(3000)
+
+//app.listen ({port:3000}, async()=>{
+  //console.log('Server up on port 3000')
+  //await sequelize.authenticate()
+  //console.log('Database Connected!')
+//})
