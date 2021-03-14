@@ -1,9 +1,8 @@
 const {Router} = require ('express');
 const bcrypt = require('bcryptjs');
-//const config = require('config');
+const config = require('config');
 const {check, validationResult} = require ('express-validator');
 const jwt = require ('jsonwebtoken');
-//const User = require('..models/users');
 const User = require ('../models').users;
 
 const router = Router()
@@ -26,7 +25,7 @@ router.post(
             })
         }
 
-        const {nickName, email, password} = req.body
+        const {nickname: nickname, email, password} = req.body
         const candidate = await User.findOne({
             where: { 
                 email: req.body.email
@@ -41,7 +40,7 @@ router.post(
         
         const hashedPassword = await bcrypt.hash(password, 12);
         console.log('any',req.body)
-        await User.create ({nickName, email, password:hashedPassword})
+        await User.create ({nickname: nickname, email, password:hashedPassword})
         res.status(201).json({message:'User created'})
        
 
@@ -84,23 +83,19 @@ router.post(
             return res.status(400).json ({message: 'User not found'})
         }
         
-        console.log('user',user.toJSON());
-        console.log('bodee',req.body)
         const isMatch = await bcrypt.compare(password, user.password)
         if (!isMatch) {
             return res.status(400).json ({message:'wrong password'})
         }
         
-        console.log('check')
         const token = jwt.sign(
-            {userId: user.userId},
+            {userId: user.uuid},
             config.get('jwtSecret'),
             {expiresIn: '1h'}
 
         )
         
-        res.json({token, userId: user.userId})
-        console.log('check')
+        res.json({token, userId: user.uuid})
         } catch (error) {
             res.status(500).json ({message: 'Something went wrong. Please try again'})
         }

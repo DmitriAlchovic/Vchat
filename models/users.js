@@ -24,7 +24,11 @@ module.exports = (sequelize,DataTypes) => {
       allowNull:false,
       primaryKey:true,
     },
-    nickName:{
+    uuid:{
+      type:DataTypes.UUID,
+      defaultValue:DataTypes.UUIDV4,
+    },
+    nickname:{
       type: DataTypes.STRING,
       allowNull:false
     },
