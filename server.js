@@ -24,7 +24,7 @@ async function start(){
 }
 
 
-app.get('/', (req, res) => {
+/* app.get('/', (req, res) => {
   res.redirect(`/${uuidV4()}`)
 })
 
@@ -42,6 +42,6 @@ io.on('connection', socket => {
       socket.to(roomId).broadcast.emit('user-disconnected', userId)
     })
   })
-})
+}) */
 start();
 
