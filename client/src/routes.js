@@ -8,7 +8,7 @@ export const useRoutes = isAuthenticated => {
 if (isAuthenticated) {
     return (
         <Switch>
-            <Route path="/links" exact>
+            <Route path="/links/:id" exact>
                 <LinksPage />
             </Route>
             <Route path="/create" exact>
@@ -17,7 +17,10 @@ if (isAuthenticated) {
             <Route path="/detail/:id" exact>
                 <DetailPage />
             </Route>
-            <Redirect to ="/create" />
+            <Route path="/socket.io/:id" exact>
+                
+            </Route>
+             <Redirect to="/create" /> 
         </Switch>
     )
 }
@@ -26,7 +29,7 @@ return (
         <Route path ="/" exact>
             <AuthPage />
         </Route>
-        <Redirect to ="/" />
+         <Redirect to ="/" />
     </Switch>
 )
 }

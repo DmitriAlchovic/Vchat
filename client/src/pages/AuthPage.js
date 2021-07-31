@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState, useRef} from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useHttp } from '../hooks/http.hook';
 import {useMessage} from '../hooks/message.hook';
@@ -6,7 +6,8 @@ import {useMessage} from '../hooks/message.hook';
 
 export const AuthPage = () => {
     const auth = useContext(AuthContext)
-    const message = useMessage()
+    const message = useMessage();
+    const ulRef = useRef(null)
     const {loading, request, error,clearError} = useHttp()
     const [form, setForm] = useState({
         nickname:'', email: '', password: '', 
@@ -19,6 +20,10 @@ export const AuthPage = () => {
 
     useEffect(()=>{
         window.M.updateTextFields()
+        
+        window.M.Tabs.init(ulRef.current);
+        console.log(ulRef.current);
+        
     })
 
     const changeHandler = event => {
@@ -46,64 +51,115 @@ export const AuthPage = () => {
     return (
         <div className="row">
             <div className="col s6 offset-s3">
-                <h1>Short Link</h1>
-                <div className="card #8d6e63 brown lighten-1">
-                <div className="card-content white-text">
-                    <span className="card-title">Autorization</span>
-                    <div>
+                <h1>Roleplay Video Chat</h1>
+                <div className="card #546e7a blue grey darken-1">
+                    <ul
+                    ref={ulRef}
+                    id="tabs-swipe-demo"
+                    className="tabs blue text-red"
+                     >
+                        <li className="tab col s3">
+                            <a className="text-blue" href="#autorization">Autorization</a>
+                        </li>
+                        <li className="tab col s3">
+                            <a href="#registration">Registration</a>
+                        </li>
+                    </ul>  
 
-                    <div className="input-field ">
-                        <input 
-                            placeholder="Enter email" 
-                            id="email" 
-                            type="text" 
-                            name="email"
-                            className="yellow-input"
-                            onChange={changeHandler}
-                        />
-                        <label htmlFor="email">Email</label>
-                    </div>
+                    <div id="autorization" className="card-content white-text">
+                        <span className="card-title">Autorization</span>
+                        <div>
 
-                    <div className="input-field ">
-                        <input 
-                            placeholder="Enter password" 
-                            id="password" 
-                            type="password" 
-                            name="password"
-                            className="yellow-input"
-                            onChange={changeHandler}
-                        />
-                        <label htmlFor="password">Password</label>
-                    </div>
+                            <div className="input-field ">
+                                <input 
+                                placeholder="Enter email" 
+                                id="email" 
+                                type="text" 
+                                name="email"
+                                className="blue-input"
+                                value={form.email}
+                                onChange={changeHandler}
+                                />
+                                <label htmlFor="email">Email</label>
+                            </div>
 
-                    <div className="input-field ">
-                        <input 
-                            placeholder="Enter nickname" 
-                            id="nickname" 
-                            type="nickname" 
-                            name="nickname"
-                            className="yellow-input"
-                            onChange={changeHandler}
-                        />
-                        <label htmlFor="nickname">Nickname</label>
-                    </div>
-                    
-                    </div>
-                </div>
-                 <div className="card-action">
-                    <button className = "btn yellow darken-4" 
-                    style={{margin: 10}}
-                    onClick={loginHandler}
-                    disabled={loading}>
-                        Enter
-                    </button>
-                    <button className = "btn grey lighten-1 black-text"
-                        onClick={registerHandler}
+                            <div className="input-field ">
+                                <input 
+                                placeholder="Enter password" 
+                                id="password" 
+                                type="password" 
+                                name="password"
+                                className="blue-input"
+                                value={form.password}
+                                onChange={changeHandler}
+                                />
+                                <label htmlFor="password">Password</label>
+                            </div>
+                        </div>
+
+                        <div className="card-action">
+                        <button className = "btn yellow darken-4" 
+                        style={{margin: 10}}
+                        onClick={loginHandler}
                         disabled={loading}>
-                        Register
-                    </button>
+                        Enter
+                        </button>
+                        </div>
+                    </div>
+
+                    <div id="registration" className="card-content white-text">
+                        <span className="card-title">Registration</span>
+                        <div>
+
+                            <div className="input-field ">
+                                <input 
+                                placeholder="Enter email" 
+                                id="email" 
+                                type="text" 
+                                name="email"
+                                className="blue-input"
+                                value={form.email}
+                                onChange={changeHandler}
+                                />
+                                <label htmlFor="email">Email</label>
+                            </div>
+
+                            <div className="input-field ">
+                                <input 
+                                placeholder="Enter password" 
+                                id="password" 
+                                type="password" 
+                                name="password"
+                                className="blue-input"
+                                value={form.password}
+                                onChange={changeHandler}
+                                />
+                                <label htmlFor="password">Password</label>
+                            </div>
+
+                            <div className="input-field ">
+                                <input 
+                                placeholder="Enter nickname" 
+                                id="nickname" 
+                                type="text" 
+                                name="nickname"
+                                className="blue-input"
+                                value={form.nickname}
+                                onChange={changeHandler}
+                                />
+                                <label htmlFor="nickname">Nickname</label>
+                            </div>
+                        </div>
+
+                        <div className="card-action">
+                            <button className = "btn grey lighten-1 black-text"
+                            onClick={registerHandler}
+                            disabled={loading}>
+                            Register
+                            </button>
+                        </div>
+                    </div>   
                 </div>
-             </div>
             </div>
         </div>
     )

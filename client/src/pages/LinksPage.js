@@ -1,163 +1,131 @@
-import React, { useEffect, useState, useRef } from 'react';
-import './LinksPage.css';
-import io from "socket.io-client";
-import Peer from "simple-peer";
-import styled from "styled-components";
+import React, { useEffect, useRef, useState } from "react";
+import * as socket from "socket.io-client";
+import Peer from "peerjs";
+//import './LinksPage.css';
 
-const Container = styled.div`
-  height: 100vh;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-`;
 
-const Row = styled.div`
-  display: flex;
-  width: 100%;
-`;
 
-const Video = styled.video`
-  border: 1px solid blue;
-  width: 50%;
-  height: 50%;
-`;
+const myPeer = new Peer(undefined, {
+  host: '/',
+  port: '3001'
+})
 
-export function LinksPage() {
-  const [yourID, setYourID] = useState("");
-  const [users, setUsers] = useState({});
-  const [stream, setStream] = useState();
-  const [receivingCall, setReceivingCall] = useState(false);
-  const [caller, setCaller] = useState("");
-  const [callerSignal, setCallerSignal] = useState();
-  const [callAccepted, setCallAccepted] = useState(false);
+export const LinksPage = () => {
+    
+    let socketRef = useRef(null);
+    const videoRef = useRef(null);
+    const userVideoRef = useRef(null);
+    const [muteIcon,setMuteIcon] = useState('mic_off');
+    const [muteIconColor, setMuteIconColor] = useState('red')
 
-  const userVideo = useRef();
-  const partnerVideo = useRef();
-  const socket = useRef();
-
-  useEffect(() => {
-    //socket.current = io.connect("/");
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
-      setStream(stream);
-      if (userVideo.current) {
-        userVideo.current.srcObject = stream;
-      }
+   useEffect(() => {
+    const peers = {}
+    socketRef.current = socket.connect('http://localhost:5000/');
+    console.log(socketRef);
+    
+      navigator.mediaDevices
+        .getUserMedia({video: true,
+          audio: true })
+        .then(stream => {
+          
+          let myVideo = videoRef.current;
+          myVideo.volume = 0;
+          addVideoStream(myVideo, stream)
+          myPeer.on('open', id => {
+            console.log(id);
+            socketRef.current.emit('join-room', '123', id)
+          })
+  
+          myPeer.on('call', call => {
+            console.log('call');
+            call.answer(stream)
+            //const video = React.createElement('video')
+            let newUserVideo = userVideoRef.current;
+            call.on('stream', userVideoStream => {
+              addVideoStream(newUserVideo, userVideoStream)
+            })
+          })
+  
+        socketRef.current.on('user-connected', userId => {
+          console.log('user-connected');
+      connectToNewUser(userId, stream)
     })
 
-    /* socket.current.on("yourID", (id) => {
-      setYourID(id);
-    })
-    socket.current.on("allUsers", (users) => {
-      setUsers(users);
-    })
+      socketRef.current.on('user-disconnected', userId => {
+      if (peers[userId]) peers[userId].close()
+    })  
+    
+    function connectToNewUser(userId, stream) {
+      const call = myPeer.call(userId, stream)
+      console.log('connectToNewUser');
+      //const video = React.createElement('video')
+      let video = userVideoRef.current;
+      call.on('stream', userVideoStream => {
+        addVideoStream(video, userVideoStream)
+      })
+      call.on('close', () => {
+        video.remove()
+      })
+    
+      peers[userId] = call
+    }
 
-    socket.current.on("hey", (data) => {
-      setReceivingCall(true);
-      setCaller(data.from);
-      setCallerSignal(data.signal);
-    }) */
+  
+
+        })
+        .catch(err => {
+          console.log("error:", err);
+        });
+    
   }, []);
 
-  /* function callPeer(id) {
-    const peer = new Peer({
-      initiator: true,
-      trickle: false,
-      config: {
-
-        iceServers: [
-            {
-                urls: "stun:numb.viagenie.ca",
-                username: "sultan1640@gmail.com",
-                credential: "98376683"
-            },
-            {
-                urls: "turn:numb.viagenie.ca",
-                username: "sultan1640@gmail.com",
-                credential: "98376683"
-            }
-        ]
-    },
-      stream: stream,
-    });
-
-    peer.on("signal", data => {
-      socket.current.emit("callUser", { userToCall: id, signalData: data, from: yourID })
+  
+  function addVideoStream(video, stream) {
+    console.log('addVideoStream');
+    video.srcObject = stream
+    video.addEventListener('loadedmetadata', () => {
+      video.play()
     })
-
-    peer.on("stream", stream => {
-      if (partnerVideo.current) {
-        partnerVideo.current.srcObject = stream;
-      }
-    });
-
-    socket.current.on("callAccepted", signal => {
-      setCallAccepted(true);
-      peer.signal(signal);
-    })
-
+    //videoRef.append(video)
   }
+  
+  const muteUnmuteHandelr = async() =>{
+    const enabled = videoRef.current.srcObject.getAudioTracks()[0].enabled;
+    if (enabled) {
+      videoRef.current.srcObject.getAudioTracks()[0].enabled = false;
+      setMuteIcon('keyboard_voice');
+      setMuteIconColor('green');
+    } 
+    else {
+      videoRef.current.srcObject.getAudioTracks()[0].enabled = true;
+      setMuteIcon('keyboard_voice');
+      setMuteIconColor('green');
+      setMuteIcon('mic_off');
+      setMuteIconColor('red');
+    }
+  }  
 
-  function acceptCall() {
-    setCallAccepted(true);
-    const peer = new Peer({
-      initiator: false,
-      trickle: false,
-      stream: stream,
-    });
-    peer.on("signal", data => {
-      socket.current.emit("acceptCall", { signal: data, to: caller })
-    })
-
-    peer.on("stream", stream => {
-      partnerVideo.current.srcObject = stream;
-    });
-
-    peer.signal(callerSignal);
-  } */
-
-  let UserVideo;
-  if (stream) {
-    UserVideo = (
-      <Video playsInline muted ref={userVideo} autoPlay />
-    );
-  }
-
-  let PartnerVideo;
-  if (callAccepted) {
-    PartnerVideo = (
-      <Video playsInline ref={partnerVideo} autoPlay />
-    );
-  }
-
-  let incomingCall;
-  if (receivingCall) {
-    incomingCall = (
-      <div>
-        <h1>{caller} is calling you</h1>
-        {/* <button onClick={acceptCall}>Accept</button> */}
-      </div>
-    )
-  }
   return (
-    <Container>
-      <Row>
-        {UserVideo}
-        {PartnerVideo}
-      </Row>
-      <Row>
-        {Object.keys(users).map(key => {
-          if (key === yourID) {
-            return null;
-          }
-          return (
-            
-            {/* <button onClick={() => callPeer(key)}>Call {key}</button> */}
-          );
-        })}
-      </Row>
-      <Row>
-        {incomingCall}
-      </Row>
-    </Container>
+      <div>
+        <table>
+          <tbody>
+            <tr>
+              <td className="gmVideoGrid">
+                <video  ref={videoRef} />
+              </td>
+              <td className="gmVideoGrid">
+                <video  ref={userVideoRef} /> 
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div className = "muteButton">
+          <a href="#/" className={"btn-floating btn-large waves-effect waves-light " + muteIconColor} 
+      onClick={muteUnmuteHandelr} 
+      ><i className="material-icons">{muteIcon}
+      </i></a>
+      </div>
+      </div>
   );
-}
+};
+

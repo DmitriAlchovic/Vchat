@@ -1,18 +1,55 @@
 @import "~materialize-css/dist/css/materialize.min.css";
-input.yellow-input {
+input.blue-input {
   border-bottom: 1px solid #fff!important;
   box-shadow: 0 1px 0 0 #fff!important;
 }
 
-input.yellow-input + label {
+input.blue-input + label {
   color: #ffffff!important;
 }
 
-input.yellow-input:focus + label {
-  color: #ffeb3b!important;
+input.blue-input:focus + label {
+  color: #031029!important;
 }
 
-input.yellow-input:focus {
-  border-bottom: 1px solid #ffeb3b!important;
-  box-shadow: 0 1px 0 0 #ffeb3b!important;
+input.blue-input:focus {
+  border-bottom: 1px solid #031029!important;
+  box-shadow: 0 1px 0 0 #031029!important;
+}
+
+.footer {
+  vertical-align: bottom;
+  text-align: center;
+  height:25%;
+  width: 100%;
+  transform: translate(0,100%);
+}
+
+ video {
+  border: 2px solid #be0808;
+  width: 50%;
+  height: 50%;
+} 
+
+.gmVideoGrid{
+  border: 2px solid #0814be;
+  
+  
+}
+
+#root {
+  background-color: #031029;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+#main {
+  flex: 1 0 auto;
+}
+
+footer {
+  width: 100%;
+  position: fixed;
+  bottom: 0;
 }
