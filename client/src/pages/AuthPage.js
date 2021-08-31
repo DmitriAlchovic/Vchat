@@ -1,17 +1,19 @@
 import React, {useContext, useEffect, useState, useRef} from 'react';
 import { AuthContext } from '../context/AuthContext';
+import { UserContext } from '../context/UserInRoomContext';
 import { useHttp } from '../hooks/http.hook';
 import {useMessage} from '../hooks/message.hook';
 
 
 export const AuthPage = () => {
-    const auth = useContext(AuthContext)
+    const auth = useContext(AuthContext);
+    const user = useContext(UserContext);
     const message = useMessage();
-    const ulRef = useRef(null)
-    const {loading, request, error,clearError} = useHttp()
+    const tabRef = useRef(null);
+    const {loading, request, error,clearError} = useHttp();
     const [form, setForm] = useState({
         nickname:'', email: '', password: '', 
-    })
+    });
 
     useEffect(() => {
         message(error)
@@ -20,10 +22,7 @@ export const AuthPage = () => {
 
     useEffect(()=>{
         window.M.updateTextFields()
-        
-        window.M.Tabs.init(ulRef.current);
-        console.log(ulRef.current);
-        
+        window.M.Tabs.init(tabRef.current);
     })
 
     const changeHandler = event => {
@@ -43,7 +42,7 @@ export const AuthPage = () => {
         try{
             
             const data = await request('/api/auth/login','POST', {...form})
-            auth.login(data.token, data.uuid)
+            auth.login(data.token, data.userId)
             
         } catch(e){}
         
@@ -54,7 +53,7 @@ export const AuthPage = () => {
                 <h1>Roleplay Video Chat</h1>
                 <div className="card #546e7a blue grey darken-1">
                     <ul
-                    ref={ulRef}
+                    ref={tabRef}
                     id="tabs-swipe-demo"
                     className="tabs blue text-red"
                      >

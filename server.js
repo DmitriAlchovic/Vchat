@@ -8,13 +8,13 @@ const io = require('socket.io')(server,{cors:{
 }});
 const { v4: uuidV4 } = require('uuid');
 const {sequelize} = require ('./models');
+const userInRoomHandler = require ('./handlers/userInRoomHandler');
 
 
 app.use(express.json({extended: true}));
-app.use('/api/auth', require('./routes/auth.routes'))
-app.use('/api/link/', require('./routes/link.routes'))
-
-
+app.use('/api/auth', require('./routes/auth.routes'));
+app.use('/api/link', require('./routes/link.routes'));
+app.use('/api/char', require('./routes/char.routes'));
 
 
 const PORT = config.get('port')|| 5000;
@@ -45,15 +45,36 @@ app.get('/:room', (req, res) => {
 })
 
 */
-io.on('connection', socket => {
-  console.log('socket connected')
+const someUser = {
+  userId:'123',
+  streamId:'456',
+  gameMaster: false, 
+roomId:'6ebd39c7-3ba5-4a15-81e'}
+let position = 0;
+io.on('connection', (socket) => { 
+  console.log('connection');
+  console.log('socket id',socket.id);
+  console.log(socket.request._query['data']);
+  console.log('users in room ', position );
   socket.on('join-room', (roomId, userId) => {
-    socket.join(roomId)
-    console.log('new user');
-    socket.to(roomId).broadcast.emit('user-connected', userId)
+    socket.join(roomId, userId);
+    console.log('new user roomId',roomId, userId);
+    socket.to(roomId).broadcast.emit('user-connected', userId);
+    socket.on('user-info', (user) => {
+      //send message to the same room
+      io.to(roomId).emit('send-user-info', user)
+  }); 
+    
+  socket.on('send-my-info', (user,newUser) => {
+    //send message to the same room
+    console.log('newUser',newUser);
+    io.to(newUser).emit('recive-info', user)
+});
 
     socket.on('disconnect', () => {
-      console.log('user disconected');
+      console.log('disconect: ',socket.id);
+      --position;
+      console.log('disconnect. in room ', position);
       socket.to(roomId).broadcast.emit('user-disconnected', userId)
     })
   })

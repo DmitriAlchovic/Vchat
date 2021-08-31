@@ -39,7 +39,6 @@ router.post(
         }
         
         const hashedPassword = await bcrypt.hash(password, 12);
-        console.log('any',req.body)
         await User.create ({nickname: nickname, email, password:hashedPassword})
         res.status(201).json({message:'User created'})
        
@@ -47,7 +46,7 @@ router.post(
         
     } catch (error) { 
         
-        res.status(500).json ({message: 'Something went wrong. Please try again pal'})
+        res.status(500).json ({message: 'Something went wrong. Please try again'})
     }
 })
 
@@ -87,7 +86,7 @@ router.post(
         if (!isMatch) {
             return res.status(400).json ({message:'wrong password'})
         }
-        
+        console.log(user.uuid);
         const token = jwt.sign(
             {userId: user.uuid},
             config.get('jwtSecret'),

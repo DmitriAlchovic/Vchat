@@ -1,7 +1,7 @@
 @import "~materialize-css/dist/css/materialize.min.css";
 input.blue-input {
-  border-bottom: 1px solid #fff!important;
-  box-shadow: 0 1px 0 0 #fff!important;
+  border-bottom: 1px solid rgb(15, 202, 202)!important;
+  box-shadow: 0 1px 0 0 rgb(2, 206, 196)!important;
 }
 
 input.blue-input + label {
@@ -27,18 +27,20 @@ input.blue-input:focus {
 
  video {
   border: 2px solid #be0808;
-  width: 50%;
-  height: 50%;
+  width: 100%;
+  height: 100%;
+  margin-left: 5;
 } 
 
 .gmVideoGrid{
   border: 2px solid #0814be;
-  
-  
+  align-content:inherit;
+  width: fit-content;
+  height: fit-content;
 }
 
 #root {
-  background-color: #031029;
+  background-color: #0c3175;
   display: flex;
   min-height: 100vh;
   flex-direction: column;
@@ -52,4 +54,43 @@ footer {
   width: 100%;
   position: fixed;
   bottom: 0;
+}
+
+.tabs .tab a{
+  color:#000;
+} /*Black color to the text*/
+
+.tabs .tab a:hover {
+  background-color:#eee;
+  color:#000;
+} /*Text color on hover*/
+
+.tabs .tab a.active {
+  background-color:#888;
+  color:#000;
+} /*Background and text color when a tab is active*/
+
+.tabs .indicator {
+  background-color:#000;
+} /*Color of underline*/
+
+
+
+textarea.blue-textarea {
+  border-bottom: 1px solid rgb(15, 202, 202)!important;
+  box-shadow: 0 1px 0 0 rgb(2, 206, 196)!important;
+  
+}
+
+textarea.blue-textarea + label {
+  color: #ffffff!important;
+}
+
+textarea.blue-textarea + label {
+  color: #031029!important;
+}
+
+textarea.blue-textarea {
+  border-bottom: 1px solid #031029!important;
+  box-shadow: 0 1px 0 0 #031029!important;
 }
