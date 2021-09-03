@@ -3,12 +3,14 @@ import {useHttp} from '../hooks/http.hook';
 import {AuthContext} from '../context/AuthContext';
 import {useHistory} from 'react-router-dom';
 import {useMessage} from '../hooks/message.hook';
+import { UserInRoomContext } from '../context/UserInRoomContext';
 
 
 
 export const CreatePage = () => {
   const history = useHistory();
   const auth = useContext(AuthContext);
+  const {isGameMaster,defineRole,character} = useContext(UserInRoomContext);
   const {loading,request, error,clearError} = useHttp();
   const [roomName, setRoom] = useState('');
   const message = useMessage();
@@ -16,7 +18,8 @@ export const CreatePage = () => {
   const [charList,setCharList]=useState('');
   const selectRef = useRef(null);
   const tabRef=useRef(null);
-  const [gameMaster,setGameMaster]=useState('');
+  const [gameMaster,setMasterRole]=useState(false);
+  const [enterButtonStatus,setEnterButtonStatus]=useState('');
   useEffect(() => {
     message(error)
     clearError()
@@ -42,6 +45,14 @@ export const CreatePage = () => {
       return(setCharList(selectCharList))
     } catch (e) {}
   },[])
+  
+  useEffect(()=>{
+   defineRole(true) 
+    if(gameMaster){
+      setEnterButtonStatus('btn yellow darken-4')
+    }
+    else{setEnterButtonStatus('btn yellow darken-4 disabled')}
+  },[gameMaster])
 
   const pressHandler = async () => {
       try {
@@ -49,7 +60,9 @@ export const CreatePage = () => {
           Authorization: `Bearer ${auth.token}`
 
         })
-        console.log(data)
+        if(gameMaster){
+    console.log(isGameMaster);
+        }
         history.push(`/links/${data.room.roomUuid}`)
       } catch (e) {}
   }
@@ -73,7 +86,7 @@ export const CreatePage = () => {
         </div>
         <div className="collapsible-body">
         <label>
-          <input onChange={(e)=>{setGameMaster(e.target.checked)}} type="checkbox" />
+          <input onChange={(e)=>{setMasterRole(e.target.checked)}} type="checkbox" />
           <span>Enter as GameMaster</span>
         </label>
         <div className="input-field col s7">
@@ -131,7 +144,7 @@ export const CreatePage = () => {
           </div>
           <p>
             <label>
-              <input  type="checkbox" onChange={(e)=>{setGameMaster(e.target.checked);}}/>
+              <input  type="checkbox" onChange={(e)=>{setMasterRole(e.target.checked);}}/>
               <span>Enter as GameMaster</span>
             </label>
           </p>
@@ -143,7 +156,7 @@ export const CreatePage = () => {
           <label>Select character</label>
         </div>
           <div>
-                <button className = "btn yellow darken-4" 
+                <button className = {enterButtonStatus} 
                 disabled={loading}
                 onClick={pressHandler}
                 >

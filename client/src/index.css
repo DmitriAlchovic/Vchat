@@ -94,3 +94,8 @@ textarea.blue-textarea {
   border-bottom: 1px solid #031029!important;
   box-shadow: 0 1px 0 0 #031029!important;
 }
+
+.chat-text-area {
+  height: 17rem;
+  vertical-align: text-bottom;
+}

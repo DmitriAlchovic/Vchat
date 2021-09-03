@@ -6,7 +6,7 @@ import {useRoutes} from './routes';
 import {useAuth} from './hooks/auth.hook'
 import { AuthContext } from './context/AuthContext';
 import { Navbar } from './components/Navbar';
-import {Loader} from './components/Loader';
+import { Loader } from './components/Loader';
 
 
 function App() {

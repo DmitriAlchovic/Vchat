@@ -10,7 +10,7 @@ export const CreateCharacterModal = () => {
   const auth = useContext(AuthContext);
   const message = useMessage();
   const [newChar, setNewChar] = useState({
-    charName:null, charDiscription: null, rpSystem: null
+    charName:'', charDiscription: '', rpSystem: ''
 });
 
 useEffect(() => {

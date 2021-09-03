@@ -1,13 +1,11 @@
 import React, {useContext, useEffect, useState, useRef} from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { UserContext } from '../context/UserInRoomContext';
 import { useHttp } from '../hooks/http.hook';
 import {useMessage} from '../hooks/message.hook';
 
 
 export const AuthPage = () => {
     const auth = useContext(AuthContext);
-    const user = useContext(UserContext);
     const message = useMessage();
     const tabRef = useRef(null);
     const {loading, request, error,clearError} = useHttp();
