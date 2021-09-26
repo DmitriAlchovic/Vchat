@@ -2,30 +2,49 @@ import React, { useState } from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 import { LinksPage } from "./pages/LinksPage";
 import { CreatePage } from "./pages/CreatePage";
-import { DetailPage } from "./pages/DetailPage";
+import {  SettingsPage } from "./pages/SettingsPage";
 import { AuthPage } from "./pages/AuthPage";
 import { UserInRoomContext } from "./context/UserInRoomContext";
-import {useRole} from "./hooks/role.hook";
+import { useRole } from "./hooks/role.hook";
+import { Navbar } from './components/Navbar';
 export const useRoutes = (isAuthenticated) => {
-    const {isGameMaster,defineRole,character}=useRole();
+  const { isGameMaster, defineMasterRole, defineCharacter, character } =
+    useRole();
   if (isAuthenticated) {
     return (
       <Switch>
-        <UserInRoomContext.Provider
-          value={{isGameMaster, defineRole, character}}
-        >
-          <Route path="/links/:id" exact>
+        <Route path="/links/:id" exact>
+          <UserInRoomContext.Provider
+            value={{
+              isGameMaster,
+              defineMasterRole,
+              defineCharacter,
+              character,
+            }}
+          >
             <LinksPage />
-          </Route>
-          <Route path="/create" exact>
+          </UserInRoomContext.Provider>
+        </Route>
+        <div>
+          <Navbar/>
+        <Route path="/create" exact>
+          <UserInRoomContext.Provider
+            value={{
+              isGameMaster,
+              defineMasterRole,
+              defineCharacter,
+              character,
+            }}
+          >
             <CreatePage />
-          </Route>
-        </UserInRoomContext.Provider>
+          </UserInRoomContext.Provider>
+        </Route>
         <Route path="/detail/:id" exact>
-          <DetailPage />
+          <SettingsPage />
         </Route>
         <Route path="/socket.io/:id" exact></Route>
         <Redirect to="/create" />
+        </div>
       </Switch>
     );
   }

@@ -5,12 +5,12 @@ import 'material-icons/iconfont/material-icons.css';
 import {useRoutes} from './routes';
 import {useAuth} from './hooks/auth.hook'
 import { AuthContext } from './context/AuthContext';
-import { Navbar } from './components/Navbar';
+//import { Navbar } from './components/Navbar';
 import { Loader } from './components/Loader';
 
 
 function App() {
-  const {token, login, logout, userId, ready, isGameMaster}= useAuth()
+  const {token, login, logout, userId, ready, isGameMaster,userName,userEmail}= useAuth()
   const isAuthenticated = !!token;
   const routes = useRoutes(isAuthenticated)
 
@@ -21,11 +21,11 @@ function App() {
   return (
     
     <AuthContext.Provider value={{
-      token, login, logout, userId, isAuthenticated, isGameMaster
+      token, login, logout, userId, isAuthenticated, isGameMaster, userName, userEmail
     }}>
     <Router>
-      {isAuthenticated && <Navbar/>}
-    <div /* className="container" */>
+      {/*  */}
+    <div >
       {routes}
     </div>
     </Router>

@@ -48,6 +48,7 @@ module.exports = (sequelize,DataTypes) => {
   users.associate = function(models) {
     users.hasMany(models.characters);
   };
-  /* characters.belongsTo(users); */
+  users.belongsToMany(users,{as:"User", foreignKey:"userId", through:"friends"});
+  users.belongsToMany(users,{as:"friend", foreignKey:"friendId", through:"friends"});
   return users;
 };

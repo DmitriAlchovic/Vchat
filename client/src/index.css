@@ -25,14 +25,9 @@ input.blue-input:focus {
   transform: translate(0,100%);
 }
 
- video {
-  border: 2px solid #be0808;
-  width: 100%;
-  height: 100%;
-  margin-left: 5;
-} 
 
-.gmVideoGrid{
+
+.player-video-grid{
   border: 2px solid #0814be;
   align-content:inherit;
   width: fit-content;
@@ -95,7 +90,20 @@ textarea.blue-textarea {
   box-shadow: 0 1px 0 0 #031029!important;
 }
 
-.chat-text-area {
-  height: 17rem;
-  vertical-align: text-bottom;
+
+
+
+.in-room-avatar{
+  margin: -1rem 0 0 0;
+}
+.room-player-name {
+  
+  margin: 0 0 0 0;
+  background-color: #eee;
+  border: 2px rgb(153, 125, 1)
+
+}
+
+video {
+  height: 15rem;
 }

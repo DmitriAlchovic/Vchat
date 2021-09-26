@@ -6,15 +6,17 @@ const server = require('http').Server(app);
 const io = require('socket.io')(server,{cors:{
   origin: '*'
 }});
-const { v4: uuidV4 } = require('uuid');
 const {sequelize} = require ('./models');
 const userInRoomHandler = require ('./handlers/userInRoomHandler');
+const fileUpload = require('express-fileupload');
 
 
 app.use(express.json({extended: true}));
+app.use(fileUpload({}))
 app.use('/api/auth', require('./routes/auth.routes'));
 app.use('/api/link', require('./routes/link.routes'));
 app.use('/api/char', require('./routes/char.routes'));
+app.use('/api/friend', require('./routes/friend.routes'));
 
 
 const PORT = config.get('port')|| 5000;
@@ -29,33 +31,13 @@ async function start(){
   }
 }
 
-/* 
-app.get('/join', (req, res) => {
-  res.send({ link: uuidV4() });
-});
- */
 
 
-/* app.get('/', (req, res) => {
-  res.redirect(`/${uuidV4()}`)
-})
-
-app.get('/:room', (req, res) => {
-  res.render('room', { roomId: req.params.room })
-})
-
-*/
-const someUser = {
-  userId:'123',
-  streamId:'456',
-  gameMaster: false, 
-roomId:'6ebd39c7-3ba5-4a15-81e'}
-let position = 0;
 io.on('connection', (socket) => { 
+
   console.log('connection');
   console.log('socket id',socket.id);
   console.log(socket.request._query['data']);
-  console.log('users in room ', position );
   socket.on('join-room', (roomId, userId) => {
     socket.join(roomId, userId);
     console.log('new user roomId',roomId, userId);
@@ -64,17 +46,19 @@ io.on('connection', (socket) => {
       //send message to the same room
       io.to(roomId).emit('send-user-info', user)
   }); 
-    
-  socket.on('send-my-info', (user,newUser) => {
+  let lastSender = null;
+  socket.on('send-my-info', (sender,user,newUser) => {
     //send message to the same room
-    console.log('newUser',newUser);
+    console.log('newUser',newUser,sender,'=>sender',lastSender,'last');
+
+    if(lastSender!=sender){
     io.to(newUser).emit('recive-info', user)
+    }
+    lastSender=sender;
 });
 
     socket.on('disconnect', () => {
       console.log('disconect: ',socket.id);
-      --position;
-      console.log('disconnect. in room ', position);
       socket.to(roomId).broadcast.emit('user-disconnected', userId)
     })
   })

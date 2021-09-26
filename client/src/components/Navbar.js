@@ -22,7 +22,6 @@ export const Navbar = () => {
         <span className="brand-logo">Roleplay Video Chat</span>
         <ul id="nav-mobile" className="right hide-on-med-and-down">
           <li><CreateCharacterModal></CreateCharacterModal></li>
-          <li><NavLink to="/links">Links</NavLink></li>
           <li><a href="/" onClick={logoutHandler}>Logout</a></li>
         </ul>
       </div>
