@@ -45,5 +45,10 @@ module.exports = (sequelize,DataTypes) => {
     sequelize,
     modelName: 'users',
   });
+  users.associate = function(models) {
+    users.hasMany(models.characters);
+  };
+  users.belongsToMany(users,{as:"User", foreignKey:"userId", through:"friends"});
+  users.belongsToMany(users,{as:"friend", foreignKey:"friendId", through:"friends"});
   return users;
 };

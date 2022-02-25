@@ -1,18 +1,115 @@
 @import "~materialize-css/dist/css/materialize.min.css";
-input.yellow-input {
-  border-bottom: 1px solid #fff!important;
-  box-shadow: 0 1px 0 0 #fff!important;
+input.blue-input {
+  border-bottom: 1px solid rgb(15, 202, 202)!important;
+  box-shadow: 0 1px 0 0 rgb(2, 206, 196)!important;
 }
 
-input.yellow-input + label {
+input.blue-input + label {
   color: #ffffff!important;
 }
 
-input.yellow-input:focus + label {
-  color: #ffeb3b!important;
+input.blue-input:focus + label {
+  color: #031029!important;
 }
 
-input.yellow-input:focus {
-  border-bottom: 1px solid #ffeb3b!important;
-  box-shadow: 0 1px 0 0 #ffeb3b!important;
+input.blue-input:focus {
+  border-bottom: 1px solid #031029!important;
+  box-shadow: 0 1px 0 0 #031029!important;
+}
+
+.footer {
+  vertical-align: bottom;
+  text-align: center;
+  height:25%;
+  width: 100%;
+  transform: translate(0,100%);
+}
+
+
+
+.player-video-grid{
+  border: 2px solid #0814be;
+  align-content:inherit;
+  width: fit-content;
+  height: fit-content;
+}
+
+#root {
+  background-color: #0c3175;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+#main {
+  flex: 1 0 auto;
+}
+
+footer {
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+}
+
+.tabs .tab a{
+  color:#000;
+} /*Black color to the text*/
+
+.tabs .tab a:hover {
+  background-color:#eee;
+  color:#000;
+} /*Text color on hover*/
+
+.tabs .tab a.active {
+  background-color:#888;
+  color:#000;
+} /*Background and text color when a tab is active*/
+
+.tabs .indicator {
+  background-color:#000;
+} /*Color of underline*/
+
+
+
+textarea.blue-textarea {
+  border-bottom: 1px solid rgb(15, 202, 202)!important;
+  box-shadow: 0 1px 0 0 rgb(2, 206, 196)!important;
+  
+}
+
+textarea.blue-textarea + label {
+  color: #ffffff!important;
+}
+
+textarea.blue-textarea + label {
+  color: #031029!important;
+}
+
+textarea.blue-textarea {
+  border-bottom: 1px solid #031029!important;
+  box-shadow: 0 1px 0 0 #031029!important;
+}
+
+
+
+
+.in-room-avatar{
+  margin: -1rem 0 0 0;
+}
+.room-player-name {
+  
+  margin: 0 0 0 0;
+  background-color: #eee;
+  border: 2px rgb(153, 125, 1)
+
+}
+
+video {
+  height: 15rem;
+}
+
+.chat-box {
+  overflow: auto;
+  background-color: #888;
+  height:  7rem;
 }
