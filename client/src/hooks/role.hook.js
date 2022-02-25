@@ -8,7 +8,6 @@ export const useRole = () => {
 
   const defineMasterRole = useCallback((GameMaster) => {
     setGameMaster(GameMaster);
-    console.log(character);
 
     localStorage.setItem(
       storageName,
@@ -19,7 +18,6 @@ export const useRole = () => {
   });
 
   const defineCharacter = useCallback((id, name) => {
-    console.log(id, name);
     setCharacter({ ...character, charId: id, charName: name });
     localStorage.setItem(
       storageName,
@@ -29,15 +27,8 @@ export const useRole = () => {
     );
   });
 
-  /* const clearRole useCallback(() => {
-    setGameMaster(null);
-    setUserId(null);
-    localStorage.removeItem(storageName);
-  }, []) */
-
-  useEffect(() => {
+    useEffect(() => {
     const data = JSON.parse(localStorage.getItem(storageName));
-    console.log(data);
     if (data && data.isGameMaster) {
       defineMasterRole(data.isGameMaster);
     }

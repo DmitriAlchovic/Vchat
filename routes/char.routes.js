@@ -9,7 +9,6 @@ const fs = require('fs');
 
 router.post("/create", auth, async (req, res) => {
   try {
-    console.log(JSON.parse(req.body.newChar));
     const {charName, charDiscription, rpSystem } = JSON.parse(req.body.newChar);
     const userUuid = req.body.userId;
     const user = await User.findAll({
@@ -19,7 +18,6 @@ router.post("/create", auth, async (req, res) => {
       raw:true,
       attributes:['userId']
     }); 
-    console.log (user[0].userId);
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
@@ -44,9 +42,7 @@ router.post("/create", auth, async (req, res) => {
         }
       }
       if (avatar) {
-        console.log('AVATAR');
         const type = avatar.name.split('.').pop();
-        console.log(type);
         if( type === 'jpg' || type === 'png'){
           avatar.mv(`${path}/avatar.${type}`);
         }
@@ -58,7 +54,6 @@ router.post("/create", auth, async (req, res) => {
 
     res.status(201).json({ message: "Character created!" });
   } catch (e) {
-    console.log(e);
     res.status(500).json({ message: "Something went wrong. Please try again" });
   }
 });

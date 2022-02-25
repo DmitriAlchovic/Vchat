@@ -8,7 +8,7 @@ import { UserInRoomContext } from "../context/UserInRoomContext";
 export const CreatePage = () => {
   const history = useHistory();
   const auth = useContext(AuthContext);
-  const { isGameMaster, defineMasterRole, defineCharacter, character } =
+  const {  defineMasterRole, defineCharacter, character } =
     useContext(UserInRoomContext);
   const { loading, request, error, clearError } = useHttp();
   const [roomName, setRoom] = useState("");
@@ -20,8 +20,8 @@ export const CreatePage = () => {
   const [gameMaster, setMasterRole] = useState(false);
   const [enterButtonStatus, setEnterButtonStatus] = useState("");
   const [selectedChar, setSelectedChar] = useState({
-    selectedCharId:"",
-    selectedCharName: ""
+    selectedCharId: "",
+    selectedCharName: "",
   });
 
   useEffect(() => {
@@ -37,8 +37,6 @@ export const CreatePage = () => {
   });
 
   useEffect(async () => {
-    console.log(auth);
-    console.log(isGameMaster);
     try {
       const data = await request(
         "/api/char/list",
@@ -70,46 +68,37 @@ export const CreatePage = () => {
       if (gameMaster && roomName) {
         defineMasterRole(gameMaster);
         const data = await request(
-        "/api/link/generate",
-        "POST",
-        { roomName: roomName },
-        {
-          Authorization: `Bearer ${auth.token}`,
-        }
-      );
-      history.push(`/links/${data.room.roomUuid}`);
-      }
-
-      else if (
+          "/api/link/generate",
+          "POST",
+          { roomName: roomName },
+          {
+            Authorization: `Bearer ${auth.token}`,
+          }
+        );
+        history.push(`/links/${data.room.roomUuid}`);
+      } else if (
         selectedChar.selectedCharName &&
         selectedChar.selectedCharId &&
         !gameMaster &&
         roomName
       ) {
-        defineCharacter(selectedChar.selectedCharId,selectedChar.selectedCharName);
+        defineCharacter(
+          selectedChar.selectedCharId,
+          selectedChar.selectedCharName
+        );
         const data = await request(
-        "/api/link/generate",
-        "POST",
-        { roomName: roomName },
-        {
-          Authorization: `Bearer ${auth.token}`,
-        }
-      );
-      history.push(`/links/${data.room.roomUuid}`);
+          "/api/link/generate",
+          "POST",
+          { roomName: roomName },
+          {
+            Authorization: `Bearer ${auth.token}`,
+          }
+        );
+        history.push(`/room/${data.room.roomUuid}`);
+
       }
-      /* const data = await request(
-        "/api/link/generate",
-        "POST",
-        { roomName: roomName },
-        {
-          Authorization: `Bearer ${auth.token}`,
-        }
-      );
-      if (gameMaster) {
-        console.log(isGameMaster);
-      }
-      history.push(`/links/${data.room.roomUuid}`); */
-      message('Enter room name');
+     
+      message("Enter room name");
     } catch (e) {}
   };
 
@@ -121,30 +110,26 @@ export const CreatePage = () => {
       selectedCharId: id,
       selectedCharName: event.target.value,
     });
-    console.log(selectedChar);
   };
 
   const joinRoomHandler = async (event) => {
-     const data = await request(
-        "/api/link/join",
-        "POST",
-        { roomName: event.target.value },
-        {
-          Authorization: `Bearer ${auth.token}`,
-        }
-      );
-      const {roomUuid} = data.roomUuid; 
-      console.log(roomUuid);
-      history.push(`/links/${roomUuid}`);
-       
-  }
+    const data = await request(
+      "/api/link/join",
+      "POST",
+      { roomName: event.target.value },
+      {
+        Authorization: `Bearer ${auth.token}`,
+      }
+    );
+    const { roomUuid } = data.roomUuid;
+    history.push(`/links/${roomUuid}`);
+  };
 
   const checkBoxHandler = (event) => {
     setMasterRole(event.target.value);
     if (event.target.value) {
-      
     }
-  }
+  };
   const roomsListHandler = async () => {
     try {
       const data = await request("/api/link/list", "GET", null, {
@@ -183,7 +168,7 @@ export const CreatePage = () => {
                 className="btn yellow darken-4"
                 value={roomName}
                 disabled={loading}
-                onClick = {joinRoomHandler}
+                onClick={joinRoomHandler}
               >
                 Join room
               </button>
@@ -226,12 +211,7 @@ export const CreatePage = () => {
           </div>
           <p>
             <label>
-              <input
-                type="checkbox"
-                onChange={(e) => {
-                  
-                }}
-              />
+              <input type="checkbox" onChange={(e) => {}} />
               <span>Enter as GameMaster</span>
             </label>
           </p>

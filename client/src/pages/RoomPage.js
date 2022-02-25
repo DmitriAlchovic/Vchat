@@ -34,7 +34,6 @@ export const LinksPage = () => {
   const streams = [];
   const top = [];
   const bottom = [];
-  let counter = 0;
   let newUser = {};
   const user = {
     socketId: null,
@@ -44,8 +43,7 @@ export const LinksPage = () => {
     GameMaster: isGameMaster,
     character: character,
   };
-  let myStream
-  let usersInRoom = [];
+  let myStream;
   let streamId = "";
   let previouStremam = "";
   const myVideoRef = user.GameMaster ? gameMasterVideoRef : userVideoRef[0];
@@ -59,32 +57,24 @@ export const LinksPage = () => {
       .getUserMedia({ video: { width: 320, height: 240 }, audio: true })
       .then((stream) => {
         user.streamId = stream.id;
-        console.log("myStream", stream);
         myPeer.on("open", (id) => {
-          console.log("open user id = ", id);
           user.socketId = socketRef.current.id;
           user.userId = id;
-           myStream= stream;
+          myStream = stream;
           addVideoStream(user, stream);
           socketRef.current.emit("join-room", history.location.pathname, id);
           socketRef.current.emit("user-info", user);
           socketRef.current.on("send-user-info", (userFromServer) => {
-            console.log("from server", userFromServer);
             newUser = userFromServer;
-            console.log("newUser", newUser);
           });
         });
 
         myPeer.on("call", (call) => {
           call.answer(stream);
-          console.log(call, "answer");
           socketRef.current.on("recive-info", (user) => {
-            console.log("recived info", user);
           });
           call.on("stream", (userVideoStream) => {
-            console.log(call, "stream");
             if (previouStremam !== userVideoStream.id) {
-              console.log("call", userVideoStream);
               previouStremam = userVideoStream.id;
               addVideoStream(call.metadata, userVideoStream);
             }
@@ -92,8 +82,6 @@ export const LinksPage = () => {
         });
 
         socketRef.current.on("user-connected", (userId) => {
-          console.log("user-connected");
-          console.log(user);
 
           connectToNewUser(userId, stream);
         });
@@ -104,12 +92,8 @@ export const LinksPage = () => {
 
         function connectToNewUser(userId, stream) {
           const call = myPeer.call(userId, stream, { metadata: user });
-          console.log("connectToNewUser");
-          console.log("call connect", call);
 
           call.on("stream", (userVideoStream) => {
-            console.log(userVideoStream, "userVideoStream");
-            console.log(call, "call on stream");
             if (streamId !== userId) {
               socketRef.current.emit(
                 "send-my-info",
@@ -117,8 +101,6 @@ export const LinksPage = () => {
                 user,
                 newUser
               );
-              console.log("new user stream", userVideoStream);
-              console.log("double");
               streamId = userId;
               addVideoStream(newUser, userVideoStream);
             }
@@ -135,79 +117,81 @@ export const LinksPage = () => {
   const addVideoStream = (user, stream) => {
     if (!user.isGameMaster) {
       streams.push(user);
-      top.push(stream)
-      
+      top.push(stream);
 
-        const topGridDisplay = streams.map(({ streamId, userId },index) =>{if(index%2==0) return (
-          <div className="col s3" key={userId}>
-            <video
-              autoPlay
-              className="col s13"
-              ref={userVideoRef[index]}
-              poster={gazebo}
-            />
-            <div>
-              <img
-                src={noAvatar}
-                alt="Contact Person"
-                className=" in-room-avatar col s3 circle"
+      const topGridDisplay = streams.map(({ streamId, userId }, index) => {
+        if (index % 2 == 0)
+          return (
+            <div className="col s3 center-align" key={userId}>
+              <video
+                autoPlay
+                className="col s13"
+                ref={userVideoRef[index]}
+                poster={gazebo}
               />
-              <div className="room-player-name card-panel orange col s9 offset-by 3">
-                PlayerName:{streamId}
-                <a href="#!" className="secondary-content">
-                  <i className="material-icons">description</i>
-                </a>
+              <div>
+                <img
+                  src={noAvatar}
+                  alt="Contact Person"
+                  className=" in-room-avatar col s3 circle"
+                />
+                <div className="room-player-name card-panel orange col s9 offset-by 3">
+                  test5 as Lamar Mambuda
+                  <a href="#!" className="secondary-content">
+                    <i className="material-icons">description</i>
+                  </a>
+                </div>
               </div>
             </div>
-          </div>)
-        });
-        console.log(topGridDisplay, 'Display');
-        setTopGrid(topGridDisplay);
-        bottom.push(user);
-        const bottomGridDisplay = streams.map(({ streamId, userId },index) => {if (index % 2 !=0)return (
-          <div className="col s3" key={userId}>
-            <video
-              autoPlay
-              className="col s13"
-              ref={userVideoRef[index]}
-              poster={gazebo}
-            />
-            <div>
-              <img
-                src={noAvatar}
-                alt="Contact Person"
-                className=" in-room-avatar col s3 circle"
+          );
+      });
+      console.log(topGridDisplay, "Display");
+      setTopGrid(topGridDisplay);
+      bottom.push(user);
+      const bottomGridDisplay = streams.map(({ streamId, userId }, index) => {
+        if (index % 2 != 0)
+          return (
+            <div className="col s3 center-align" key={userId}>
+              <video
+                autoPlay
+                className="col s13"
+                ref={userVideoRef[index]}
+                poster={gazebo}
               />
-              <div className="room-player-name card-panel orange col s9 offset-by 3">
-                PlayerName:{streamId}
-                <a href="#!" className="secondary-content">
-                  <i className="material-icons">description</i>
-                </a>
-                <div></div>
+              <div>
+                <img
+                  src={noAvatar}
+                  alt="Contact Person"
+                  className=" in-room-avatar col s3 circle"
+                />
+                <div className="room-player-name card-panel orange col s9 offset-by 3">
+                  PlayerName:John Doe
+                  <a href="#!" className="secondary-content">
+                    <i className="material-icons">description</i>
+                  </a>
+                  <div></div>
+                </div>
               </div>
             </div>
-          </div>
-        )});
-        console.log(bottomGridDisplay, 'bottomGrid');
-        setBottomGrid(bottomGridDisplay);
-      
+          );
+      });
+      console.log(bottomGridDisplay, "bottomGrid");
+      setBottomGrid(bottomGridDisplay);
+
       console.log(userVideoRef, "ref");
-      console.log(top,'tpp');
-      for (let i=0; i<top.length ; i ++){
-        
-      userVideoRef[i].current.srcObject = top[i];
-      console.log(top[i], "topI");
-      console.log(streams, "streams");
-      userVideoRef[i].current.addEventListener(
-        "loadedmetadata",
-        () => {
+      console.log(top, "tpp");
+      for (let i = 0; i < top.length; i++) {
+        userVideoRef[i].current.srcObject = top[i];
+        console.log(top[i], "topI");
+        console.log(streams, "streams");
+        userVideoRef[i].current.addEventListener("loadedmetadata", () => {
           userVideoRef[i].current.play();
-        }
-      );
-    }}
+        });
+      }
+    }
   };
 
-   const muteUnmuteHandelr = () => {
+  const muteUnmuteHandelr = () => {
     const enabled = myStream.getAudioTracks()[0].enabled;
     if (enabled) {
       myStream.getAudioTracks()[0].enabled = false;
@@ -220,7 +204,7 @@ export const LinksPage = () => {
     }
   };
 
-  /* const offOnVideoHandelr = () => {
+  const offOnVideoHandelr = () => {
     let enabled = myVideoRef.current.srcObject.getVideoTracks()[0].enabled;
     if (enabled) {
       myVideoRef.current.srcObject.getVideoTracks()[0].enabled = false;
@@ -231,7 +215,7 @@ export const LinksPage = () => {
       setVideoIcon("videocam_off");
       setVideoIconColor("red");
     }
-  };  */
+  };
 
   return (
     <div>
@@ -250,25 +234,24 @@ export const LinksPage = () => {
                 className="in-room-avatar col s3 circle"
               />
               <div className="room-player-name card-panel orange col s9 offset-by 3">
-                GameMaster:
-                <a href="#!" className="secondary-content">
-                  <i className="material-icons">description</i>
-                </a>
+                GameMaster: test3
+                <a href="#!" className="secondary-content"></a>
                 <div></div>
               </div>
             </div>
           </div>
 
           {topGrid}
-
-          
         </div>
         <div className="col s12">
           <div className="col s3">
             <div className="input-field">
-              <textarea value="text" readOnly className="chat-text-area">
-                area
-              </textarea>
+              <div className="chat-box">
+                <div className="card-panel blue right-align col s12">
+                  Welcome to the text chat
+                </div>
+                <div className="card-panel blue col s7 offset-by 5">text2</div>
+              </div>
             </div>
             <div className="input-field col s12">
               <i className="material-icons prefix">send</i>
@@ -277,16 +260,12 @@ export const LinksPage = () => {
             </div>
           </div>
 
-         {bottomGrid} 
-
-          
-
-          
+          {bottomGrid}
         </div>
       </div>
 
       <div className="align center">
-         <a
+        <a
           className={
             "btn-floating btn-large waves-effect waves-light " + muteIconColor
           }
@@ -294,14 +273,21 @@ export const LinksPage = () => {
         >
           <i className="material-icons">{muteIcon}</i>
         </a>
-        {/* <a
+        <a
+          style={{ margin: 10 }}
           className={
             "btn-floating btn-large waves-effect waves-light " + videoIconColor
           }
           onClick={offOnVideoHandelr}
         >
           <i className="material-icons">{videoIcon}</i>
-        </a> */} 
+        </a>
+        <a
+          style={{ margin: 10 }}
+          className={"btn-floating btn-large waves-effect waves-light gray"}
+        >
+          <i className="material-icons">exit_to_app</i>
+        </a>
       </div>
     </div>
   );

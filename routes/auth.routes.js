@@ -51,7 +51,6 @@ router.post(
       fs.mkdirSync(`${config.get("filePath")}/${userUuid}/characters`);
       res.status(201).json({ message: "User created" });
     } catch (error) {
-      console.log(error);
       res
         .status(500)
         .json({ message: "Something went wrong. Please try again" });
@@ -92,7 +91,6 @@ router.post(
       if (!isMatch) {
         return res.status(400).json({ message: "wrong password" });
       }
-      console.log(user.uuid);
       const token = jwt.sign({ userId: user.uuid }, config.get("jwtSecret"), {
         expiresIn: "24h",
       });
@@ -108,7 +106,6 @@ router.post(
 
 router.post("/info", async (req, res) => {
   try {
-    console.log("Here!!!!!!!!");
     const user = await User.findOne({
       where: {
         uuid: req.body.userId,

@@ -107,3 +107,9 @@ textarea.blue-textarea {
 video {
   height: 15rem;
 }
+
+.chat-box {
+  overflow: auto;
+  background-color: #888;
+  height:  7rem;
+}
